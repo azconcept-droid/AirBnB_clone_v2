@@ -115,16 +115,54 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
+        _line = _cls = _args = ""
+
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        # Isolate class name from
+        # <Class name> <param 1> <param 2> <param 3>... format
+        _line = args.partition(" ")
+        _cls = _line[0]
+        if _cls not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        _args = _line[2]
+        attribute = {}
+        for param in _args.split(" "):
+            # Param syntax: <key name>=<value>
+            _param = param.partition("=")
+            key, value = _param[0].strip(), _param[2].strip()
+
+            if not value:  # not a key-value pair
+                continue
+
+            # Skip params that with keys that are private attribute
+            # or can't be recognized by the class
+            if key.startswith("__") and key.endswith("_")\
+                    or key not in HBNBCommand.classes[_cls].__dict__:
+                continue
+
+            # Parse value to required type
+            # check if value is a string
+            if value[0] == "\"" and value[-1] == "\"":
+                value = value.strip("\"").replace("_", " ")
+            else:
+                try:
+                    value = eval(value)
+                except Exception:
+                    pass
+                if type(value) not in [int, float]:  # must be an int or float
+                    continue  # skip!
+
+            attribute[key] = value
+
+        new_instance = HBNBCommand.classes[_cls]()
+        new_instance.__dict__.update(attribute)  # update with params
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
