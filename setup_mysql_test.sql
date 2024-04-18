@@ -1,7 +1,7 @@
 --- This srcipt setup MYSQL server for this project
 
 --- Create hbnb_test_db database
-CREATE DATABASE IF NOT EXISTs hbnb_test_db;
+CREATE DATABASE IF NOT EXISTS hbnb_test_db;
 
 --- Create new user hbnb_dev
 CREATE USER IF NOT EXISTS 'hbnb_test'@'localhost' IDENTIFIED BY 'hbnb_test_pwd';
