@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is '}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -115,7 +115,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        _line = _cls = _args = ""
+        part_param = _line = _cls = _params = ""
 
         if not args:
             print("** class name missing **")
@@ -129,12 +129,13 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
-        _args = _line[2]
+        _params = _line[2]
         attribute = {}
-        for param in _args.split(" "):
+        for param in _params.split(" "):
             # Param syntax: <key name>=<value>
-            _param = param.partition("=")
-            key, value = _param[0].strip(), _param[2].strip()
+            # partition param with "="
+            part_param = param.partition("=")
+            key, value = part_param[0], part_param[2]
 
             if not value:  # not a key-value pair
                 continue
@@ -310,7 +311,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -318,7 +319,7 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] == ' ':
                 att_name = args[0]
             # check for quoted val arg
             if args[2] and args[2][0] is '\"':
@@ -361,3 +362,11 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+
+
+# HBNB_ENV : running environment. It can be “dev” or “test” for the moment (“production” soon!)
+# HBNB_MYSQL_USER : the username of your MySQL
+# HBNB_MYSQL_PWD : the password of your MySQL
+# HBNB_MYSQL_HOST : the hostname of your MySQL
+# HBNB_MYSQL_DB : the database name of your MySQL
+# HBNB_TYPE_STORAGE : the type of storage used. It can be “fil
