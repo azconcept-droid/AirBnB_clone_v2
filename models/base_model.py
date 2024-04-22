@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from models import storage
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy import create_engine, Column, String, Datetime
+from sqlalchemy import Column, String, DateTime
 
 Base = declarative_base()
 
@@ -12,7 +12,7 @@ class BaseModel:
     """A base class for all hbnb models"""
 
     id = Column(String(60), primary_key=True)
-    created_at = Column(Datetime, nullable=False, default=datetime.utcnow())
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     updated_at = Column(Datetime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
