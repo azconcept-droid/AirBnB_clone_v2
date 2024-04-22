@@ -12,13 +12,13 @@ from os import getenv
 class State(BaseModel, Base):
     """ State class """
 
-    __table__ = 'states'
+    __tablename__ = 'states'
 
     name = Column(String(128), nullable=False)
 
     # DB storage type implementation
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        cities = relationship('City', backref='states',
+        cities = relationship('City', backref='state',
                               cascade='all, delete, delete-orphan')
     else:
         @property
