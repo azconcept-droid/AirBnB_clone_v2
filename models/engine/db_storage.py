@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """This module defines a class to manage db storage for hbnb clone"""
 
-import json
 from os import getenv
 from models.base_model import BaseModel, Base
 from models.user import User
@@ -10,8 +9,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, Column, String, Datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 
 class DBStorage:
@@ -30,61 +29,51 @@ class DBStorage:
 
         url = 'mysql+mysqldb://{}:{}@{}/{}'.format(user, passwd, host, db)
         self.__engine = create_engine(url, pool_pre_ping=True)
-        Base.metadata.create_all(self.__engine)
 
-        # Delete all tables in test mode
+        # Delete all tables in test environment
         if env == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in db storage"""
-        Session = sessionmaker(bind=self.__engine)
-        self.__session = Session()
+        """Returns all cls obj currently in db storage"""
+
+        all_cls_obj = {}
         if cls:
-            # Querying
-            cls_obj = self.__session.query(cls).all()
-        all_obj = self.__session.query(
-            User, Place, State, City, Amenity, Review).all()
+            # Querying a specific class
+            cls_objs = self.__session.query(cls).all()
+            for cls_obj in cls_objs:
+                key = '{}.{}'.format(cls_obj.__class__.__name__, cls_obj.id)
+                all_cls_obj[key] = cls_obj
+            return all_cls_obj
+        # Querying all classes
+        classes = [User, Place, State, City, Amenity, Review]
+        for _class in classes:
+            all_obj = self.__session.query(_class).all()
+            for obj in all_obj:
+                key = '{}.{}'.format(obj.__class__.__name__, obj.id)
+                all_cls_obj[key] = obj
+        return all_cls_obj
 
     def new(self, obj):
-        """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        """Adds new object to current db session"""
+        self.__session.add(obj)
 
     def save(self):
-        """Saves storage dictionary to file"""
-        pass
+        """Saves all changes of the current db session"""
+        self.__session.commit()
 
     def reload(self):
-        """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
+        """Loads table from db storage and persist db session"""
 
-        classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
-        try:
-            temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
-        except FileNotFoundError:
-            pass
+        Base.metadata.create_all(self.__engine)
+
+        session_thread = sessionmaker(bind=self.__engine,
+                                      expire_on_commit=False)
+        Session = scoped_session(session_factory=session_thread)
+        self.__session = Session()
 
     def delete(self, obj=None):
-        """ Delete obj from __objects """
+        """ Delete obj from current db session """
 
         if obj is not None:
-            key = "{}.{}".format(obj.__class__.__name__, obj.id)
-
-            if key in FileStorage.__objects:
-                del FileStorage.__objects[key]
-
-            self.save()
+            self.__session.delete(obj)
