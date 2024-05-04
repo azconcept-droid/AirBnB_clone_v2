@@ -6,7 +6,10 @@ from datetime import datetime
 
 
 def do_pack():
-    """This function archive webstatic folder"""
+    """This function archive webstatic folder
+
+    Return: Archive path or None
+    """
 
     # Current date and time
     archive = datetime.now().strftime("web_static_%Y%m%d%H%M%S.tgz")
