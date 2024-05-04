@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This module generates .tgz archive"""
 
-from fabric.api import *
+from fabric import *
 from datetime import datetime
 
 
