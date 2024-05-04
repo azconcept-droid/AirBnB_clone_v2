@@ -24,5 +24,9 @@ def do_pack():
 
     if result.succeeded:
         return arch_path
-    
+
     return None
+
+
+if __name__ == "__main__":
+    do_pack()
