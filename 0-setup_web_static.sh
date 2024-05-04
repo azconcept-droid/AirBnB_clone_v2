@@ -32,6 +32,6 @@ else
 fi
 
 chown ubuntu:ubuntu -R /data/
-sed -i 's+/var/www/html+/data/web_static/current+g' /etc/nginx/sites-available/default
+# sed -i 's+/var/www/html+/data/web_static/current+g' /etc/nginx/sites-available/default
 sed -i 's+_;+_;\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}+g' /etc/nginx/sites-available/default
 service nginx restart
