@@ -6,10 +6,8 @@ from datetime import datetime
 
 
 def do_pack():
-    """
-    This function archive webstatic folder
-
-    Return: Archive path or None
+    """ Compress directory into an archive
+    Return: path to archive or None
     """
 
     # Current date and time
@@ -28,7 +26,3 @@ def do_pack():
         return arch_path
     except Exception:
         return None
-
-
-if __name__ == "__main__":
-    do_pack()
