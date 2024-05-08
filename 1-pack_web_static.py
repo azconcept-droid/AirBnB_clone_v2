@@ -8,7 +8,6 @@ from datetime import datetime
 def do_pack():
     """Compress and package web_static"""
 
-    # Current date and time
     archive = datetime.now().strftime("web_static_%Y%m%d%H%M%S.tgz")
 
     try:
