@@ -35,4 +35,3 @@ def do_deploy(archive_path):
     except Exception:
         return False
 
-do_deploy()
