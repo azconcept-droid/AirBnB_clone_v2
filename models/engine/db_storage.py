@@ -2,7 +2,7 @@
 """This module defines a class to manage db storage for hbnb clone"""
 
 from os import getenv
-from models.base_model import BaseModel, Base
+from models.base_model import Base
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -21,7 +21,7 @@ class DBStorage:
     def __init__(self):
         """initialize db storage class"""
         # Get the environmental variables
-        user = getenv('HBNB_MYSL_USER')
+        user = getenv('HBNB_MYSQL_USER')
         passwd = getenv('HBNB_MYSQL_PWD')
         host = getenv('HBNB_MYSQL_HOST', 'localhost')
         db = getenv('HBNB_MYSQL_DB')
@@ -33,6 +33,10 @@ class DBStorage:
         # Delete all tables in test environment
         if env == 'test':
             Base.metadata.drop_all(self.__engine)
+
+    def close(self):
+        """ close session """
+        self.__session.close_all()
 
     def all(self, cls=None):
         """Returns all cls obj currently in db storage"""
