@@ -2,7 +2,7 @@
 """This module defines a base class for all models in our hbnb clone"""
 import uuid
 from datetime import datetime
-from models import storage
+import models
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import Column, String, DateTime
 
@@ -28,7 +28,7 @@ class BaseModel:
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
             del kwargs['__class__']
-            self.name = kwargs['name']
+            # self.name = kwargs['name']
             self.__dict__.update(kwargs)
 
     def __str__(self):
@@ -39,8 +39,8 @@ class BaseModel:
     def save(self):
         """Updates updated_at with current time when instance is changed"""
         self.updated_at = datetime.now()
-        storage.new(self)
-        storage.save()
+        models.storage.new(self)
+        models.storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
@@ -58,4 +58,4 @@ class BaseModel:
 
     def delete(self):
         """Delete the current instance from the storage"""
-        storage.delete(self)
+        models.storage.delete(self)
