@@ -19,12 +19,9 @@ def cities_list():
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
 
-    cities = storage.all(City).values()
-    cities = sorted(cities, key=lambda k: k.name)
-
-    return render_template('8-cities_by_states.html', states=states, cities=cities)
+    return render_template('8-cities_by_states.html', states=states)
 
 
 if __name__ == "__main__":
     """ Main Function """
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5006)
