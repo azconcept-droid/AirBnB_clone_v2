@@ -2,6 +2,7 @@
 """ Starts a Flash Web Application """
 from models import storage
 from models.state import State
+from models.city import City
 from flask import Flask, render_template
 app = Flask(__name__)
 
@@ -12,12 +13,16 @@ def close_db(error):
     storage.close()
 
 
-@app.route('/states_list', strict_slashes=False)
-def states_list():
-    """ displays a HTML page with a list of states """
+@app.route('/cities_by_states', strict_slashes=False)
+def cities_list():
+    """ displays a HTML page with a list of cities in states """
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
-    return render_template('7-states_list.html', states=states)
+
+    cities = storage.all(City).values()
+    cities = sorted(cities, key=lambda k: k.name)
+
+    return render_template('8-cities_by_states.html', states=states, cities=cities)
 
 
 if __name__ == "__main__":
